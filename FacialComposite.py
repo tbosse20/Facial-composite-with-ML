@@ -1,6 +1,9 @@
+import random
+
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 import numpy as np
+import cv2
 
 class FacialComposite:
     # canvasSize
@@ -8,9 +11,15 @@ class FacialComposite:
     parameters = {
         "head": {
             "shape": [0, 0],
-            "width": [1.0, 3.0], "height": [1.0, 10.0],
-            "vertical": None, "distance": None,
-            "color": [[0, 0, 0], [255, 255, 255]]},
+            "width": [500, 800], "height": [500, 800],
+            "distance": None, "vertical": None,
+            "color": [[0, 0, 0], [255, 255, 255]]
+        }, "eye": {
+            "shape": [0, 0],
+            "width": [100, 200], "height": [100, 200],
+            "distance": [0, 2.0], "vertical": [0, 9.0],
+            "color": None
+        },
     }
 
     def __init__(self, features=None):
@@ -23,7 +32,7 @@ class FacialComposite:
         self.selected = False
 
     def ValidateFeatures(self, features):
-        pass
+        return features
 
     # Iterate features
     # Check if value is between parameters
@@ -33,7 +42,8 @@ class FacialComposite:
         para = self.parameters[feature][attribute]
         if not para: return 0
         min, max = para[0], para[1]
-        value = min  # np.random(min, max)
+        if type(min) == list: return [0, 0, 0]
+        value = random.randint(min, max)
         return value
 
     def _RandomValues(self, feature):
@@ -77,11 +87,13 @@ class FacialComposite:
     def DrawFace(self):
         self.canvas = self.MakeCanvas()
 
-    # DrawFeature(feature) for feature in matrix
-        self.DrawFeature("head")
+        print(self.features)
+        for type, feature in self.features.items():
+            self.DrawFeature(type, feature)
 
     def MakeCanvas(self):
-        canvas = np.zeros((10, 10))
+        canvas = np.zeros([800, 800, 3], dtype=np.uint8)
+        canvas[:] = 255
         return canvas
 
         # Instantiate canvas
@@ -89,18 +101,24 @@ class FacialComposite:
         # Fill white
         # Return canvas
 
-    def DrawFeature(self, feature):
-        # Create path for image, feature.type/.shape
-        # Load feature image
-        # Resize image, feature.width/.height
-        # Mirror image at feature.distance
-        # Place image, feature.vertical(/.distance)
-        image = mpimg.imread("Features/head/0.jpg")
-        self.cavnas = np.add(self.canvas, image)
-        print(self.cavnas)
+    def DrawFeature(self, type, feature):
+        shape = str(feature["shape"])
+        image = cv2.imread("Features/" + type + "/" + shape + ".jpg")
+
+        width, height = feature["width"], feature["height"]
+        image = cv2.resize(image, (width, height), interpolation=cv2.INTER_AREA)
+
+        vertical, distance = feature["vertical"], feature["distance"]
+        distance += int(self.canvas.shape[1] / 2 - width / 2)
+        vertical += int(self.canvas.shape[0] / 2 - height / 2)
+
+        self.canvas[
+            vertical : vertical + height,
+            distance : distance + width
+        ] = image
 
     def ShowFaceImage(self):
-        imgplot = plt.imshow(self.canvas)
+        plt.imshow(self.canvas)
         plt.show()
 
     def __str__(self):
@@ -109,9 +127,10 @@ class FacialComposite:
 
 if __name__ == "__main__":
     festures = {
-        "head": {"width": 1.7, "height": 4.8}
+        "head": {"shape": 0, "width": 700, "height": 700, "distance": 0, "vertical": 0},
+        "eye": {"shape": 0, "width": 100, "height": 100, "distance": 0, "vertical": 0},
     }
 
-    randomFace = FacialComposite()
+    randomFace = FacialComposite(festures)
     print(randomFace)
     randomFace.ShowFaceImage()
