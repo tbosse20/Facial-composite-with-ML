@@ -9,3 +9,7 @@ while True:
 
     FacialComposit.display(genetic.population)
     genetic.evolve(1)
+
+# Genetic.py
+# def evolve(n=1):
+# self.selectionMethod
