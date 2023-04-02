@@ -2,9 +2,9 @@ import Genetic
 import FacialComposit
 
 genetic = Genetic.Genetic(
-selection = Genetic.Selection.Tournement,
-unitType = FacialComposit.Face
-populationSize = 100
+    selection = Genetic.Selection.Tournement,
+    unitType = FacialComposit.Face,
+    populationSize = 100,
 )
 
 while True:
