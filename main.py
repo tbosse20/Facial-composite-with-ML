@@ -1,9 +1,11 @@
 import Genetic
 import FacialComposit
 
-genetic = Genetic.Genetic(Genetic.select.tournememt)
-genetic.unit(FacialComposit.Face)
-genetic.populate(100)
+genetic = Genetic.Genetic(
+selection = Genetic.Selection.Tournement,
+unitType = FacialComposit.Face
+populationSize = 100
+)
 
 while True:
 
@@ -12,4 +14,4 @@ while True:
 
 # Genetic.py
 # def evolve(n=1):
-# self.selectionMethod
+# self.selection
