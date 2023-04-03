@@ -147,9 +147,8 @@ class FacialComposite:
 
 
     def ShowFaceImage(self):
-        plt.imshow(self.canvas)
-        plt.axis('off')
-        plt.show()
+        cv2.imshow("Face", self.canvas)
+        cv2.waitKey(0)
 
     def __str__(self):
         return str(self.features)
@@ -163,7 +162,39 @@ if __name__ == "__main__":
         "mouth": {"shape": 0, "width": 100, "height": 100, "distance": 0, "vertical": 100},
     }
 
-    for i in range(10):
-        randomFace = FacialComposite()
-        print(randomFace)
-        randomFace.ShowFaceImage()
+    faces = [
+        FacialComposite()
+        for i in range(4)
+    ]
+
+    fig = plt.figure(figsize=(8, 8))
+    columns = 4
+    rows = 5
+
+    # https://stackoverflow.com/questions/42867400/python-show-image-upon-hovering-over-a-point
+    # https://towardsdatascience.com/tooltips-with-pythons-matplotlib-dcd8db758846
+    def hover(event):
+        # if the mouse is over the scatter points
+        print(event)
+        print(event.xy)
+
+    # add callback for mouse moves
+    fig.canvas.mpl_connect('motion_notify_event', hover)
+    for i, face in enumerate(faces):
+        fig.add_subplot(rows, columns, i+1)
+        plt.axis('off')
+        plt.imshow(face.canvas)
+    plt.show()
+
+    exit()
+
+    for i, face in enumerate(faces):
+        fig, axs = plt.subplots(2, 2)
+        axs[0, 0].plt.imshow(face)
+        axs[0, 0].set_title('Axis [0, 0]')
+        axs[0, 1].plot(x, y, 'tab:orange')
+        axs[0, 1].set_title('Axis [0, 1]')
+        axs[1, 0].plot(x, -y, 'tab:green')
+        axs[1, 0].set_title('Axis [1, 0]')
+        axs[1, 1].plot(x, -y, 'tab:red')
+        axs[1, 1].set_title('Axis [1, 1]')
