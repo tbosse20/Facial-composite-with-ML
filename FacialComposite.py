@@ -1,25 +1,47 @@
 import random
-
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 import numpy as np
 import cv2
+
+def insertImage(foreground, background, x, y):
+    # https://docs.opencv.org/3.4/d0/d86/tutorial_py_image_arithmetics.html
+    h, w, channels = foreground.shape
+    roi = background[y:y+h, x:x+w]
+    foregroundgray = cv2.cvtColor(foreground, cv2.COLOR_BGR2GRAY)
+    ret, mask = cv2.threshold(foregroundgray, 200, 255, cv2.THRESH_BINARY)
+    background_bg = cv2.bitwise_and(roi, roi, mask=mask)
+    mask_inv = cv2.bitwise_not(mask)
+    foreground_fg = cv2.bitwise_and(foreground, foreground, mask=mask_inv)
+    dst = cv2.add(background_bg, foreground_fg)
+    background[y:y+h, x:x+w] = dst
+    return background
 
 class FacialComposite:
     # canvasSize
 
     parameters = {
         "head": {
-            "shape": [0, 0],
+            "shape": [0, 1],
             "width": [500, 800], "height": [500, 800],
             "distance": None, "vertical": None,
             "color": [[0, 0, 0], [255, 255, 255]]
         }, "eye": {
-            "shape": [0, 0],
+            "shape": [0, 2],
             "width": [100, 200], "height": [100, 200],
-            "distance": [0, 2.0], "vertical": [0, 9.0],
+            "distance": [100, 300], "vertical": [-300, 0],
             "color": None
-        },
+        }, "mouth": {
+            "shape": [0, 1],
+            "width": [100, 200], "height": [100, 200],
+            "distance": [0, 2.0], "vertical": [0, 300],
+            "color": None
+        }, "nose": {
+            "shape": [0, 1],
+            "width": [100, 200], "height": [100, 200],
+            "distance": [0, 0], "vertical": [-200, 200],
+            "color": None
+        }
     }
 
     def __init__(self, features=None):
@@ -108,17 +130,25 @@ class FacialComposite:
         width, height = feature["width"], feature["height"]
         image = cv2.resize(image, (width, height), interpolation=cv2.INTER_AREA)
 
-        vertical, distance = feature["vertical"], feature["distance"]
-        distance += int(self.canvas.shape[1] / 2 - width / 2)
-        vertical += int(self.canvas.shape[0] / 2 - height / 2)
+        amount = 2 if feature["distance"] > 0 else 1
 
-        self.canvas[
-            vertical : vertical + height,
-            distance : distance + width
-        ] = image
+        for i in range(amount):
+            vertical, distance = feature["vertical"], feature["distance"]
+
+            if i == 1:
+                image = cv2.flip(image, 1)
+                distance *= -1
+
+            distance += int(self.canvas.shape[1] / 2 - width / 2)
+            vertical += int(self.canvas.shape[0] / 2 - height / 2)
+
+            self.canvas = insertImage(image, self.canvas, distance, vertical)
+
+
 
     def ShowFaceImage(self):
         plt.imshow(self.canvas)
+        plt.axis('off')
         plt.show()
 
     def __str__(self):
@@ -126,11 +156,14 @@ class FacialComposite:
 
 
 if __name__ == "__main__":
+
     festures = {
         "head": {"shape": 0, "width": 700, "height": 700, "distance": 0, "vertical": 0},
         "eye": {"shape": 0, "width": 100, "height": 100, "distance": 0, "vertical": 0},
+        "mouth": {"shape": 0, "width": 100, "height": 100, "distance": 0, "vertical": 100},
     }
 
-    randomFace = FacialComposite(festures)
-    print(randomFace)
-    randomFace.ShowFaceImage()
+    for i in range(10):
+        randomFace = FacialComposite()
+        print(randomFace)
+        randomFace.ShowFaceImage()

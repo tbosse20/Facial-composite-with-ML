@@ -5,13 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="4d7357fb-c9d6-4868-9109-4a4ca82de753" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/FacialComposite.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Genetic.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/test_genetic.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/Facial-composite-with-ML.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/Facial-composite-with-ML.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FacialComposite.py" beforeDir="false" afterPath="$PROJECT_DIR$/FacialComposite.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Features/eye/0.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/Features/eye/0.jpg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Features/head/0.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/Features/head/0.jpg" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
