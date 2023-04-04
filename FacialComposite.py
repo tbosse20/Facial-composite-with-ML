@@ -1,21 +1,21 @@
 import random
-import matplotlib.pyplot as plt
-import matplotlib.image as mpimg
 import numpy as np
 import cv2
+
 
 def insertImage(foreground, background, x, y):
     # https://docs.opencv.org/3.4/d0/d86/tutorial_py_image_arithmetics.html
     h, w, channels = foreground.shape
-    roi = background[y:y+h, x:x+w]
+    roi = background[y:y + h, x:x + w]
     foregroundgray = cv2.cvtColor(foreground, cv2.COLOR_BGR2GRAY)
     ret, mask = cv2.threshold(foregroundgray, 200, 255, cv2.THRESH_BINARY)
     background_bg = cv2.bitwise_and(roi, roi, mask=mask)
     mask_inv = cv2.bitwise_not(mask)
     foreground_fg = cv2.bitwise_and(foreground, foreground, mask=mask_inv)
     dst = cv2.add(background_bg, foreground_fg)
-    background[y:y+h, x:x+w] = dst
+    background[y:y + h, x:x + w] = dst
     return background
+
 
 class FacialComposite:
     # canvasSize
@@ -52,6 +52,7 @@ class FacialComposite:
         self.features = features
         self.DrawFace()
         self.selected = False
+        self.fitness = 0
 
     def ValidateFeatures(self, features):
         return features
@@ -144,8 +145,6 @@ class FacialComposite:
 
             self.canvas = insertImage(image, self.canvas, distance, vertical)
 
-
-
     def ShowFaceImage(self):
         cv2.imshow("Face", self.canvas)
         cv2.waitKey(0)
@@ -161,40 +160,3 @@ if __name__ == "__main__":
         "eye": {"shape": 0, "width": 100, "height": 100, "distance": 0, "vertical": 0},
         "mouth": {"shape": 0, "width": 100, "height": 100, "distance": 0, "vertical": 100},
     }
-
-    faces = [
-        FacialComposite()
-        for i in range(4)
-    ]
-
-    fig = plt.figure(figsize=(8, 8))
-    columns = 4
-    rows = 5
-
-    # https://stackoverflow.com/questions/42867400/python-show-image-upon-hovering-over-a-point
-    # https://towardsdatascience.com/tooltips-with-pythons-matplotlib-dcd8db758846
-    def hover(event):
-        # if the mouse is over the scatter points
-        print(event)
-        print(event.xy)
-
-    # add callback for mouse moves
-    fig.canvas.mpl_connect('motion_notify_event', hover)
-    for i, face in enumerate(faces):
-        fig.add_subplot(rows, columns, i+1)
-        plt.axis('off')
-        plt.imshow(face.canvas)
-    plt.show()
-
-    exit()
-
-    for i, face in enumerate(faces):
-        fig, axs = plt.subplots(2, 2)
-        axs[0, 0].plt.imshow(face)
-        axs[0, 0].set_title('Axis [0, 0]')
-        axs[0, 1].plot(x, y, 'tab:orange')
-        axs[0, 1].set_title('Axis [0, 1]')
-        axs[1, 0].plot(x, -y, 'tab:green')
-        axs[1, 0].set_title('Axis [1, 0]')
-        axs[1, 1].plot(x, -y, 'tab:red')
-        axs[1, 1].set_title('Axis [1, 1]')
